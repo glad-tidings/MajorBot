@@ -2,16 +2,16 @@
 MajorBot Auto Farm
 
 # Features
-|          Feature          | Supported |
+| Feature                   | Supported |
 | :------------------------ | :-------- |
-|       Multithreading      |    ✅     |
-|      Auto Claim Task      |    ✅     |
-|       Auto Roulette       |    ✅     |
-|      Auto Hold Coins      |    ✅     |
-|      Auto Swipe Coins     |    ✅     |
-|     Auto Puzzle Pavel     |    ✅     |
-|     Auto Daily Streak     |    ✅     |
-| Support pyrogram .session |    ✅     |
+| Multithreading            | ✅        |
+| Auto Claim Task           | ✅        |
+| Auto Roulette             | ✅        |
+| Auto Hold Coins           | ✅        |
+| Auto Swipe Coins          | ✅        |
+| Auto Puzzle Pavel         | ✅        |
+| Auto Daily Streak         | ✅        |
+| Support pyrogram .session | ✅        |
 
 ## Settings
 open Major.py with text editor and find
