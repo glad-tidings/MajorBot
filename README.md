@@ -1,7 +1,7 @@
 # MajorBot
 MajorBot Auto Farm
 
-# Features
+## Features
 | Feature                   | Supported |
 | :------------------------ | :-------- |
 | Multithreading            | ✅        |
@@ -27,12 +27,12 @@ major_queries.append(MajorQuery(2, "Account 3", "query_id of account 3"))
 
 ## Installation
 You can download the [repository](https://github.com/glad-tidings/MajorBot/) by cloning it to your system and installing the necessary dependencies:
-Linux:
+### Linux:
 ```bash
 pip3 install -r requirements.txt
 python3 Major.py
 ```
-Windows:
+### Windows:
 ```bash
 pip install -r requirements.txt
 python Major.py
