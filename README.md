@@ -3,6 +3,7 @@ MajorBot Auto Farm
 
 # Features
 |          Feature          | Supported |
+| :------------------------ | :-------- |
 |       Multithreading      |    ✅     |
 |      Auto Claim Task      |    ✅     |
 |       Auto Roulette       |    ✅     |
