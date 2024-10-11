@@ -11,7 +11,6 @@ MajorBot Auto Farm
 | Auto Swipe Coins          | ✅        |
 | Auto Puzzle Pavel         | ✅        |
 | Auto Daily Streak         | ✅        |
-| Support pyrogram .session | ✅        |
 
 ## Settings
 open Major.py with text editor and find
