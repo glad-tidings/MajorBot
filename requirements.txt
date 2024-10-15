@@ -1,2 +1,1 @@
-marshmallow_dataclass==8.7.1
 Requests==2.32.3
