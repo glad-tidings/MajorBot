@@ -1,13 +1,12 @@
 import asyncio
 import json
+import time
 from pickle import LONG
 import threading
-import time
 from typing import Any
 import requests
 import random
 from datetime import datetime
-from marshmallow_dataclass import dataclass
 
 #nullable enable
 
@@ -38,28 +37,20 @@ class MajorApi:
         })
 
     def mapi_get(self, request_uri):
-        try:
-            response = self.client.get(request_uri)
-            response.raise_for_status()
-            return response
-        except requests.exceptions.RequestException as ex:
-            return requests.Response()
+        response = self.client.get(request_uri)
+        return response
 
     def mapi_post(self, request_uri, content):
-        try:
-            response = self.client.post(request_uri, data=content)
-            response.raise_for_status()
-            return response
-        except requests.exceptions.RequestException as ex:
-            return requests.Response()
+        response = self.client.post(request_uri, data=content)
+        return response
 
 class MajorBot:
     def __init__(self, query):
         self.pub_query = query
         get_token = self.majpr_get_token()
         if get_token:
-            self.access_token = get_token.access_token
-            self.user_id = get_token.user.id
+            self.access_token = get_token["access_token"]
+            self.user_id = get_token["user"]["id"]
             self.has_error = False
             self.error_message = ""
         else:
@@ -72,24 +63,21 @@ class MajorBot:
         serialized_request = json.dumps(request)
         response = mapi.mapi_post("https://major.bot/api/auth/tg/", serialized_request)
         if(response.text != ""):
-            response_json = response.json()
-            return MajorAccessTokenResponse.Schema().load(response_json)
+            return response.json()
         return None
 
     def majpr_user_detail(self):
         mapi = MajorApi(1, self.access_token, self.pub_query.index)
         response = mapi.mapi_get(f"https://major.bot/api/users/{self.user_id}/")
         if(response.text != ""):
-            response_json = response.json()
-            return MajorUserDetailResponse.Schema().load(response_json)
+            return response.json()
         return None
 
     def major_get_tasks(self, daily):
         mapi = MajorApi(1, self.access_token, self.pub_query.index)
         response = mapi.mapi_get(f"https://major.bot/api/tasks/?is_daily={str(daily).lower()}")
         if(response.text != ""):
-            response_json = response.json()
-            return [MajorGetTaskResponse.Schema().load(task) for task in response_json]
+            return response.json()
         return None
 
     def major_done_task(self, task_id):
@@ -99,16 +87,15 @@ class MajorBot:
         response = mapi.mapi_post("https://major.bot/api/tasks/", serialized_request)
         if(response.text != ""):
             response_json = response.json()
-            return MajorDoneTaskResponse.Schema().load(response_json)
+            return response_json
         return None
 
     def pre_major_durov(self):
         client = requests.Session()
         client.timeout = 30
-        response = client.get("https://raw.githubusercontent.com/glad-tidings/MajorBot/refs/heads/main/roulette.json")
+        response = client.get("https://raw.githubusercontent.com/glad-tidings/MajorBot/refs/heads/main/puzzle.json")
         if(response.text != ""):
-            response_json = response.json()
-            return self.major_durov(MajorDurovRequest.Schema().load(response_json))
+            return self.major_durov(response.json())
         return False
 
     def major_durov(self, request):
@@ -118,7 +105,7 @@ class MajorBot:
             response_json = response.json()
             if response_json.get("success"):
                 time.sleep(15)
-                request = {"choice_1": request.choice_1,"choice_2": request.choice_2,"choice_3": request.choice_3,"choice_4": request.choice_4}
+                request = {"choice_1": request["choice_1"],"choice_2": request["choice_2"],"choice_3": request["choice_3"],"choice_4": request["choice_4"]}
                 serialized_request = json.dumps(request)
                 response = mapi.mapi_post("https://major.bot/api/durov/", serialized_request)
                 if(response.text != ""):
@@ -176,88 +163,15 @@ class Tools:
         platform = ["Android", "iPhone", "Windows", "Android", "Android", "Android", "Android", "Android", "Android", "Android", "Android", "Android", "Android", "Windows", "Android", "iPad", "iPhone"]
         return platform[index] if plat else user_agents[index]
 
-@dataclass
-class MajorAccessTokenRequest:
-        init_data:Any
-
-@dataclass
-class MajorAccessTokenUser:
-        id:Any
-        username:Any
-        first_name:Any
-        last_name:Any
-        is_premium:Any
-        rating:Any
-        squad_id:Any
-        is_telegram_hidden:Any
-        status_id:Any
-        notifications_enabled:Any
-
-@dataclass
-class MajorAccessTokenResponse:
-        access_token:Any
-        token_type:Any
-        user:MajorAccessTokenUser
-
-@dataclass
-class MajorUserDetailResponse:
-        id:Any
-        username:Any
-        first_name:Any
-        last_name:Any
-        rating:Any
-        squad_id:Any
-        notifications_enabled:Any
-        is_premium:Any
-        is_telegram_hidden:Any
-        status_id:Any
-
-@dataclass
-class MajorGetTaskResponse:
-        id:Any
-        title:Any
-        type:Any
-        award:Any
-        is_completed:Any
-        payload:Any
-        description:Any
-        icon_url:Any
-
-@dataclass
-class MajorDoneTaskRequest:
-        task_id:Any
-
-@dataclass
-class MajorDoneTaskResponse:
-        task_id:Any
-        is_completed:Any
-
-@dataclass
-class MajorDurovRequest:
-        choice_1:Any
-        choice_2:Any
-        choice_3:Any
-        choice_4:Any
-
-@dataclass
-class MajorDurovResponse:
-    correct:Any
-
-@dataclass
-class MajorRouletteResponse:
-    rating_award:Any
-
-@dataclass
-class MajorCoinRequest:
-    coins:Any
-
-@dataclass
-class MajorCoinResponse:
-    success:Any
-
 if __name__ == "__main__":
+    # with open('data.txt', 'r') as file:
+        # data = json.load(file)
+    f = open('data.txt')
+    data = json.load(f)
+
     major_queries = []
-    major_queries.append(MajorQuery(0, "Account 1", "query_id"))
+    for eachData in data:
+        major_queries.append(MajorQuery(int(eachData["index"]), eachData["name"], eachData["auth"]))
 
     print("----------------------- Major Bot Starting -----------------------")
     print()
@@ -266,57 +180,57 @@ if __name__ == "__main__":
         while True:
             bot = MajorBot(query)
             if not bot.has_error:
-                print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] login successfully.")
+                print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] login successfully.")
                 sync = bot.majpr_user_detail()
                 if sync is not None:
-                    print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] synced successfully. B<{sync.rating}>")
+                    print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] synced successfully. B<{sync["rating"]}>")
                     task_list = bot.major_get_tasks(True)
                     if task_list is not None:
-                        for task in [x for x in task_list if not x.is_completed and (x.id == 5 or x.id == 16)]:
+                        for task in [x for x in task_list if not x["is_completed"] and (int(x["id"]) == 5 or int(x["id"]) == 16)]:
                             claim_task = bot.major_done_task(task.id)
                             if claim_task is not None:
-                                if claim_task.is_completed:
-                                    print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] task '{task.title}' completed")
+                                if claim_task["is_completed"]:
+                                    print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] task '{task.title}' completed")
                                 else:
-                                    print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] task '{task.title}' failed")
+                                    print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] task '{task.title}' failed")
 
                                 each_task_rnd = random.randint(7, 20)
                                 time.sleep(each_task_rnd)
 
                     durev = bot.pre_major_durov()
                     if durev:
-                        print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] puzzle durov completed")
+                        print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] puzzle durov completed")
                     else:
-                        print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] puzzle durov failed")
+                        print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] puzzle durov failed")
                     time.sleep(25)
 
                     hold_coin = bot.major_hold_coin()
                     if hold_coin:
-                        print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] hold coin completed")
+                        print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] hold coin completed")
                     else:
-                        print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] hold coin failed")
+                        print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] hold coin failed")
                     time.sleep(25)
 
                     roulette = bot.major_roulette()
                     if roulette:
-                        print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] roulette completed")
+                        print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] roulette completed")
                     else:
-                        print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] roulette failed")
+                        print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] roulette failed")
                     time.sleep(25)
 
                     swipe_coin = bot.major_swipe_coin(random.randint(1500, 2500))
                     if swipe_coin:
-                        print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] swipe coin completed")
+                        print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] swipe coin completed")
                     else:
-                        print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] swipe coin failed")
+                        print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] swipe coin failed")
                     time.sleep(25)
                 else:
-                    print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] synced failed")
+                    print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] synced failed")
             else:
-                print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] {bot.error_message}")
+                print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] {bot.error_message}")
 
             sync_rnd = random.randint(25000, 30000)
-            print(f"[{time:YYYY-MM-DD HH:mm:ss}] [Major] [{query.name}] sync sleep '{int(sync_rnd / 3600)}h {int(sync_rnd % 3600 / 60)}m {sync_rnd % 60}s'")
+            print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] sync sleep '{int(sync_rnd / 3600)}h {int(sync_rnd % 3600 / 60)}m {sync_rnd % 60}s'")
             time.sleep(sync_rnd)
 
     for query in major_queries:
@@ -325,4 +239,3 @@ if __name__ == "__main__":
             time.sleep(60)
 
     input()
-
