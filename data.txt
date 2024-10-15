@@ -1,0 +1,4 @@
+[
+   {"index":0,"name":"Account1","auth":"query_id of account 1"},
+   {"index":1,"name":"Account2","auth":"query_id of account 2"}
+]
