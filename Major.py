@@ -187,12 +187,12 @@ if __name__ == "__main__":
                     task_list = bot.major_get_tasks(True)
                     if task_list is not None:
                         for task in [x for x in task_list if not x["is_completed"] and (int(x["id"]) == 5 or int(x["id"]) == 16)]:
-                            claim_task = bot.major_done_task(task.id)
+                            claim_task = bot.major_done_task(task["id"])
                             if claim_task is not None:
                                 if claim_task["is_completed"]:
-                                    print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] task '{task.title}' completed")
+                                    print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] task '{task["title"]}' completed")
                                 else:
-                                    print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] task '{task.title}' failed")
+                                    print(f"[{'{0:%Y-%m-%d %H:%M:%S}'.format(datetime.now())}] [Major] [{query.name}] task '{task["title"]}' failed")
 
                                 each_task_rnd = random.randint(7, 20)
                                 time.sleep(each_task_rnd)
