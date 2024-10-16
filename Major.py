@@ -164,8 +164,6 @@ class Tools:
         return platform[index] if plat else user_agents[index]
 
 if __name__ == "__main__":
-    # with open('data.txt', 'r') as file:
-        # data = json.load(file)
     f = open('data.txt')
     data = json.load(f)
 
