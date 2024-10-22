@@ -16,8 +16,7 @@ I am not responsible for your account. Please consider the potential risks befor
 | Auto Daily Streak         | ✅        |
 
 ## Settings
-Enter all query_id in data.txt file
-[Get Telegram MiniGame Query ID using Chrome](https://youtu.be/r0Ulqev-9M4)
+Enter all query_id in data.txt file ([Get Telegram MiniGame Query ID using Chrome](https://youtu.be/r0Ulqev-9M4))
 
 ## Installation
 You can download the [repository](https://github.com/glad-tidings/MajorBot/) by cloning it to your system and installing the necessary dependencies:
