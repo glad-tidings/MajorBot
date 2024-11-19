@@ -37,4 +37,4 @@ USDT(TRC20): TRjdnBWpS1xT4a2oKQdFsM3AAc6TxVmqGZ
 TON: UQBmpnet6lYCLXObDwJLitDuMcPIocJIKVxg6pLvaFv5fRmO
 ```
 
-![](http://visit.parselecom.com/Api/Visit/2/6C3B2A)
+![](http://visit.parselecom.com/Api/Visit/glad-tidings/MajorBot/6C3B2A)
